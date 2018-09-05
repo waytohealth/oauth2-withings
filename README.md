@@ -1,10 +1,8 @@
-# Fitbit Provider for OAuth 2.0 Client
+# Withings Provider for OAuth 2.0 Client
 
-This package provides Fitbit OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
+This package provides Withings OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
 This package is compliant with [PSR-1][], [PSR-2][], [PSR-4][], and [PSR-7][]. If you notice compliance oversights, please send a patch via pull request.
-
-Developers can register applications to use the Fitbit API at <https://dev.fitbit.com/apps>.
 
 ## Requirements
 
@@ -20,7 +18,7 @@ The following versions of PHP are supported.
 To install, use composer:
 
 ```
-composer require djchen/oauth2-fitbit
+composer require waytohealth/oauth2-withings
 ```
 
 ## Usage
@@ -28,11 +26,11 @@ composer require djchen/oauth2-fitbit
 ### Authorization Code Grant
 
 ```php
-use djchen\OAuth2\Client\Provider\Fitbit;
+use waytohealth\OAuth2\Client\Provider\Withings;
 
-$provider = new Fitbit([
-    'clientId'          => '{fitbit-oauth2-client-id}',
-    'clientSecret'      => '{fitbit-client-secret}',
+$provider = new Withings([
+    'clientId'          => '{withings-oauth2-client-id}',
+    'clientSecret'      => '{withings-client-secret}',
     'redirectUri'       => 'https://example.com/callback-url'
 ]);
 
@@ -85,10 +83,10 @@ if (!isset($_GET['code'])) {
         // the service, using the access token; it returns an object conforming
         // to Psr\Http\Message\RequestInterface.
         $request = $provider->getAuthenticatedRequest(
-            Fitbit::METHOD_GET,
-            Fitbit::BASE_FITBIT_API_URL . '/1/user/-/profile.json',
+            Withings::METHOD_GET,
+            Withings::BASE_WITHINGS_API_URL . '/v2/user?action=getdevice',
             $accessToken,
-            ['headers' => [Fitbit::HEADER_ACCEPT_LANG => 'en_US'], [Fitbit::HEADER_ACCEPT_LOCALE => 'en_US']]
+            ['headers' => [Withings::HEADER_ACCEPT_LANG => 'en_US'], [Withings::HEADER_ACCEPT_LOCALE => 'en_US']]
             // Fitbit uses the Accept-Language for setting the unit system used
             // and setting Accept-Locale will return a translated response if available.
             // https://dev.fitbit.com/docs/basics/#localization
@@ -116,9 +114,9 @@ if (!isset($_GET['code'])) {
 Once your application is authorized, you can refresh an expired token using a refresh token rather than going through the entire process of obtaining a brand new token. To do so, simply reuse this refresh token from your data store to request a refresh.
 
 ```php
-$provider = new djchen\OAuth2\Client\Provider\Fitbit([
-    'clientId'          => '{fitbit-oauth2-client-id}',
-    'clientSecret'      => '{fitbit-client-secret}',
+$provider = new waytohealth\OAuth2\Client\Provider\Withings([
+    'clientId'          => '{withings-oauth2-client-id}',
+    'clientSecret'      => '{withings-client-secret}',
     'redirectUri'       => 'https://example.com/callback-url'
 ]);
 
@@ -141,11 +139,11 @@ $ ./vendor/bin/phpunit
 
 ## Contributing
 
-Please see [CONTRIBUTING](https://github.com/djchen/oauth2-fitbit/blob/master/CONTRIBUTING.md) for details.
+Please see [CONTRIBUTING](https://github.com/waytohealth/oauth2-withings/blob/master/CONTRIBUTING.md) for details.
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/djchen/oauth2-fitbit/blob/master/LICENSE) for more information.
+The MIT License (MIT). Please see [License File](https://github.com/waytohealth/oauth2-withings/blob/master/LICENSE) for more information.
 
 [PSR-1]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-1-basic-coding-standard.md
 [PSR-2]: https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md
