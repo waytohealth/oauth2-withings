@@ -1,0 +1,41 @@
+{
+    "name": "waytohealth/oauth2-withings",
+    "description": "Withings OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Way To Health",
+            "email": "dev@waytohealth.org",
+            "homepage": "https://www.waytohealth.org"
+        }
+    ],
+    "keywords": [
+        "oauth",
+        "oauth2",
+        "client",
+        "authorization",
+        "authentication",
+        "withings"
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "league/oauth2-client": "~2.2"
+    },
+    "require-dev": {
+        "eloquent/phony": "^0.14.1",
+        "phpunit/phpunit": "^5.0",
+        "squizlabs/php_codesniffer": "^2.0",
+        "friendsofphp/php-cs-fixer": "~1.0",
+        "jakub-onderka/php-parallel-lint": "~0.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "waytohealth\\OAuth2\\Client\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "waytohealth\\OAuth2\\Client\\Test\\": "tests/src/"
+        }
+    }
+}
