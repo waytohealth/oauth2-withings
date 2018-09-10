@@ -187,7 +187,7 @@ class Withings extends AbstractProvider
      */
     protected function getAccessTokenResourceOwnerId()
     {
-        return 'user_id';
+        return 'userid';
     }
 
     /**
