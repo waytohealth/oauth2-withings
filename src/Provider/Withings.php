@@ -42,19 +42,9 @@ class Withings extends AbstractProvider
     const HEADER_ACCEPT_LOCALE = 'Accept-Locale';
 
     /**
-     * Withings code for Weight devices
-     *
-     * @const int
+     * @var string Key used in a token response to identify the resource owner.
      */
-    const APPI_WEIGHT = 1;
-
-    const APPI_HEART = 4;
-
-    const APPI_ACTIVITY = 16;
-
-    const APPI_SLEEP = 44;
-
-    const APPI_USER = 46;
+    const ACCESS_TOKEN_RESOURCE_OWNER_ID = 'userid';
 
     /**
      * Get authorization url to begin OAuth flow.
@@ -111,21 +101,13 @@ class Withings extends AbstractProvider
      */
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        if ($response->getStatusCode() >= 400) {
-            $errorMessage = '';
-            if (!empty($data['errors'])) {
-                foreach ($data['errors'] as $error) {
-                    if (!empty($errorMessage)) {
-                        $errorMessage .= ' , ';
-                    }
-                    $errorMessage .= implode(' - ', $error);
-                }
-            } else {
-                $errorMessage = $response->getReasonPhrase();
-            }
+        if (array_key_exists('error', $data)) {
+            $errorMessage = $data['error'];
+            $errorCode = array_key_exists('status', $data) ? 
+                $data['status'] : $response->getStatusCode();
             throw new IdentityProviderException(
                 $errorMessage,
-                $response->getStatusCode(),
+                $errorCode,
                 $response
             );
         }
@@ -151,22 +133,6 @@ class Withings extends AbstractProvider
     }
 
     /**
-     * Builds request options used for requesting an access token.
-     *
-     * @param array $params
-     *
-     * @return array
-     */
-    protected function getAccessTokenOptions(array $params)
-    {
-        $options = parent::getAccessTokenOptions($params);
-        $options['headers']['Authorization'] =
-            'Basic '.base64_encode($this->clientId.':'.$this->clientSecret);
-
-        return $options;
-    }
-
-    /**
      * Generates a resource owner object from a successful resource owner
      * details request.
      *
@@ -177,17 +143,7 @@ class Withings extends AbstractProvider
      */
     public function createResourceOwner(array $response, AccessToken $token)
     {
-        return new GenericResourceOwner($response, 'id');
-    }
-
-    /**
-     * Returns the key used in the access token response to identify the resource owner.
-     *
-     * @return string|null Resource owner identifier key
-     */
-    protected function getAccessTokenResourceOwnerId()
-    {
-        return 'userid';
+        return new GenericResourceOwner($response, self::ACCESS_TOKEN_RESOURCE_OWNER_ID);
     }
 
     /**
