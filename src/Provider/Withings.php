@@ -87,7 +87,7 @@ class Withings extends AbstractProvider
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        return static::BASE_WITHINGS_API_URL.'/v2/user?action=getdevice';
+        return static::BASE_WITHINGS_API_URL.'/v2/user?action=getdevice&access_token='.$token->getToken();
     }
 
     /**
