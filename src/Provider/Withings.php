@@ -103,7 +103,7 @@ class Withings extends AbstractProvider
     {
         if (array_key_exists('error', $data)) {
             $errorMessage = $data['error'];
-            $errorCode = array_key_exists('status', $data) ? 
+            $errorCode = array_key_exists('status', $data) ?
                 $data['status'] : $response->getStatusCode();
             throw new IdentityProviderException(
                 $errorMessage,
