@@ -131,16 +131,6 @@ class Withings extends AbstractProvider
     }
 
     /**
-     * Returns the string used to separate scopes.
-     *
-     * @return string
-     */
-    protected function getScopeSeparator()
-    {
-        return ' ';
-    }
-
-    /**
      * Returns authorization parameters based on provided options.
      * Withings does not use the 'approval_prompt' param and here we remove it.
      *
