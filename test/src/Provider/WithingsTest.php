@@ -4,7 +4,7 @@ namespace waytohealth\OAuth2\Client\Test\Provider;
 
 use waytohealth\OAuth2\Client\Provider\Withings;
 use League\OAuth2\Client\Token\AccessToken;
-use Eloquent\Phony\Phpunit\Phony;
+use Mockery;
 use PHPUnit_Framework_TestCase as TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
@@ -27,9 +27,6 @@ class WithingsTest extends TestCase
             'clientSecret' => 'mock_secret',
             'redirectUri' => 'none',
         ]);
-
-        $this->mockClient = Phony::mock(\GuzzleHttp\ClientInterface::class);
-        $this->provider->setHttpClient($this->mockClient->get());
 
         $this->token = new AccessToken([
             'access_token' => 'mock_token',
@@ -91,6 +88,22 @@ class WithingsTest extends TestCase
         $this->assertEquals('action=getdevice&access_token=mock_token', $uri['query']);
     }
 
+    public function testGetAccessToken()
+    {
+        $response = Mockery::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->andReturn('{"access_token":"mock_access_token", "token_type":"Bearer", "scope": "identify"}');
+        $response->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
+        $response->shouldReceive('getStatusCode')->andReturn(200);
+        $client = Mockery::mock('GuzzleHttp\ClientInterface');
+        $client->shouldReceive('send')->times(1)->andReturn($response);
+        $this->provider->setHttpClient($client);
+        $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
+        $this->assertEquals('mock_access_token', $token->getToken());
+        $this->assertNull($token->getExpires());
+        $this->assertNull($token->getRefreshToken());
+        $this->assertNull($token->getResourceOwnerId());
+    }
+
     public function testParsedResponseSuccess()
     {
         // When we have a successful response, we return the parsed response
@@ -106,25 +119,36 @@ class WithingsTest extends TestCase
 }
 RESPONSE;
 
-        $requestMock = Phony::mock(\Psr\Http\Message\RequestInterface::class)->get();
+        $request = Mockery::mock(\Psr\Http\Message\RequestInterface::class);
 
-        $this->mockClient->send->returns(
-            new \GuzzleHttp\Psr7\Response(200, [], $successResponse)
-        );
-        $this->assertEquals($this->provider->getParsedResponse($requestMock)['body']['expires'], "string");
+        $response = Mockery::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->andReturn($successResponse);
+        $response->shouldReceive('getHeader')->andReturn('');
+
+        $client = Mockery::mock('GuzzleHttp\ClientInterface');
+        $client->shouldReceive('send')->times(1)->andReturn($response);
+        $this->provider->setHttpClient($client);
+
+        $responseBody = $this->provider->getParsedResponse($request)['body'];
+        $this->assertEquals($responseBody['expires'], "string");
     }
 
     public function testParsedResponseFailure()
     {
-        $requestMock = Phony::mock(\Psr\Http\Message\RequestInterface::class)->get();
-
         // When the API responds with an error, we throw an exception
         $this->expectException(\League\OAuth2\Client\Provider\Exception\IdentityProviderException::class);
 
-        $this->mockClient->send->returns(
-            new \GuzzleHttp\Psr7\Response(200, [], '{"status":503,"error":"Test error"}')
-        );
-        $this->provider->getParsedResponse($requestMock);
+        $request = Mockery::mock(\Psr\Http\Message\RequestInterface::class);
+
+        $response = Mockery::mock('Psr\Http\Message\ResponseInterface');
+        $response->shouldReceive('getBody')->andReturn('{"status":503,"error":"Invalid params"}');
+        $response->shouldReceive('getHeader')->andReturn('');
+
+        $client = Mockery::mock('GuzzleHttp\ClientInterface');
+        $client->shouldReceive('send')->times(1)->andReturn($response);
+        $this->provider->setHttpClient($client);
+
+        $this->provider->getParsedResponse($request);
     }
 
     public function testCreateResourceOwner()
@@ -138,15 +162,19 @@ RESPONSE;
 
     public function testRevoke()
     {
+        $client = Mockery::spy('GuzzleHttp\ClientInterface');
+        $this->provider->setHttpClient($client);
+
         $this->provider->revoke($this->token);
 
-        $args = $this->mockClient->send
-            ->allCalls()[0]
-            ->firstEvent()
-            ->arguments();
-
-        $calledUri = $args->get(0)->getUri();
-        $this->assertEquals($calledUri->getQuery(), "action=revoke&token=mock_token");
+        $client->shouldHaveReceived('send')->with(
+            Mockery::on(function ($argument) {
+                $uri = $argument->getUri();
+                $path = $uri->getPath() === "/notify";
+                $query =  $uri->getQuery() === "action=revoke&token=".$this->token->getToken();
+                return $path && $query;
+            })
+        );
     }
 
 }
