@@ -18,14 +18,14 @@ class Withings extends AbstractProvider
      *
      * @const string
      */
-    const BASE_WITHINGS_URL = 'https://account.health.nokia.com';
+    const BASE_WITHINGS_URL = 'https://account.withings.com';
 
     /**
      * Withings API URL
      *
      * @const string
      */
-    const BASE_WITHINGS_API_URL = 'https://api.health.nokia.com';
+    const BASE_WITHINGS_API_URL = 'https://wbsapi.withings.net';
 
     /**
      * HTTP header Accept-Language.
