@@ -108,7 +108,7 @@ class Withings extends AbstractProvider
             throw new IdentityProviderException(
                 $errorMessage,
                 $errorCode,
-                $response
+		$data
             );
         }
     }
@@ -155,7 +155,7 @@ class Withings extends AbstractProvider
      */
     public function revoke(AccessToken $accessToken)
     {
-        $options = $this->getAccessTokenOptions([]);
+	$options = $this->optionProvider->getAccessTokenOptions($this->getAccessTokenMethod(), []);
         $uri = $this->appendQuery(
             self::BASE_WITHINGS_API_URL.'/notify?action=revoke',
             $this->buildQueryString(['token' => $accessToken->getToken()])
