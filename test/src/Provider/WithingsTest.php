@@ -136,7 +136,7 @@ RESPONSE;
     public function testParsedResponseFailure()
     {
         // When the API responds with an error, we throw an exception
-        $this->expectException(\League\OAuth2\Client\Provider\Exception\IdentityProviderException::class);
+        // $this->expectException(\League\OAuth2\Client\Provider\Exception\IdentityProviderException::class);
 
         $request = Mockery::mock(\Psr\Http\Message\RequestInterface::class);
 
@@ -148,7 +148,18 @@ RESPONSE;
         $client->shouldReceive('send')->times(1)->andReturn($response);
         $this->provider->setHttpClient($client);
 
-        $this->provider->getParsedResponse($request);
+        try {
+            $this->provider->getParsedResponse($request);
+            $this->fail('An exception should have been thrown');
+        } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+            $this->assertEquals('Invalid params', $e->getMessage());
+            $this->assertEquals(503, $e->getCode());
+            // make sure response body is the parsed body
+            $body = $e->getResponseBody();
+            $this->assertTrue(is_array($body));
+            $this->assertEquals(503, $body['status']);
+            $this->assertEquals('Invalid params', $body['error']);
+        }
     }
 
     public function testCreateResourceOwner()
