@@ -2,7 +2,7 @@
 
 Contributions are **welcome** and will be fully **credited**.
 
-We accept contributions via Pull Requests on [Github](https://github.com/djchen/oauth2-fitbit).
+We accept contributions via Pull Requests on [Github](https://github.com/waytohealth/oauth2-withings).
 
 
 ## Pull Requests
