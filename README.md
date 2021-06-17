@@ -1,5 +1,7 @@
 # Withings Provider for OAuth 2.0 Client
 
+[![CI](https://github.com/waytohealth/oauth2-withings/actions/workflows/ci.yml/badge.svg)](https://github.com/waytohealth/oauth2-withings/actions/workflows/ci.yml)
+
 This package provides Withings OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
 This package is compliant with [PSR-1][], [PSR-2][], [PSR-4][], and [PSR-7][]. If you notice compliance oversights, please send a patch via pull request.
