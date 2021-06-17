@@ -38,7 +38,7 @@ jobs:
       run: ./vendor/bin/parallel-lint src test
 
     - name: php-cs-fixer
-      run: ./vendor/bin/php-cs-fixer fix src --level=psr2
+      run: ./vendor/bin/php-cs-fixer fix src --rules=@PSR2
 
     - name: phpcs
       run: ./vendor/bin/phpcs src --standard=psr2 -sp
