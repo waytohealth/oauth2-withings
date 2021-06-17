@@ -43,3 +43,5 @@ jobs:
     - name: phpcs
       run: ./vendor/bin/phpcs src --standard=psr2 -sp
 
+    - name: phpstan
+      run: ./vendor/bin/phpstan analyze src --level 5

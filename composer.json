@@ -26,7 +26,8 @@
         "phpunit/phpunit": "^5.0",
         "squizlabs/php_codesniffer": "^2.0",
         "friendsofphp/php-cs-fixer": "~1.0",
-        "jakub-onderka/php-parallel-lint": "~0.9"
+        "jakub-onderka/php-parallel-lint": "~0.9",
+        "phpstan/phpstan": "^0.12.89"
     },
     "autoload": {
         "psr-4": {
