@@ -128,7 +128,7 @@ class Withings extends AbstractProvider
             throw new IdentityProviderException(
                 'Invalid response received from Authorization Server. Missing status.',
                 0,
-                null
+                $result
             );
         }
 
@@ -136,7 +136,7 @@ class Withings extends AbstractProvider
             throw new IdentityProviderException(
                 sprintf('Invalid response received from Authorization Server. Status code %d.', $result['status']),
                 0,
-                null
+                $result
             );
         }
 
@@ -144,7 +144,7 @@ class Withings extends AbstractProvider
             throw new IdentityProviderException(
                 'Invalid response received from Authorization Server. Missing body.',
                 0,
-                null
+                $result
             );
         }
 
