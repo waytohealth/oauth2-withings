@@ -65,7 +65,7 @@ class Withings extends AbstractProvider
      */
     public function getBaseAccessTokenUrl(array $params)
     {
-        return static::BASE_WITHINGS_URL.'/oauth2/token';
+        return static::BASE_WITHINGS_API_URL.'/v2/oauth2';
     }
 
     /**
@@ -111,6 +111,44 @@ class Withings extends AbstractProvider
                 $data
             );
         }
+    }
+
+    /**
+     * Prepares an parsed access token response for a grant.
+     *
+     * Custom mapping of expiration, etc should be done here. Always call the
+     * parent method when overloading this method.
+     *
+     * @param  mixed $result
+     * @return array
+     */
+    protected function prepareAccessTokenResponse(array $result)
+    {
+        if (!array_key_exists('status', $result)) {
+            throw new IdentityProviderException(
+                'Invalid response received from Authorization Server. Missing status.',
+                0,
+                null
+            );
+        }
+
+        if ($result['status'] !== 0) {
+            throw new IdentityProviderException(
+                sprintf('Invalid response received from Authorization Server. Status code %d.', $result['status']),
+                0,
+                null
+            );
+        }
+
+        if (!array_key_exists('body', $result)) {
+            throw new IdentityProviderException(
+                'Invalid response received from Authorization Server. Missing body.',
+                0,
+                null
+            );
+        }
+
+        return parent::getAuthorizationParameters($result['body']);
     }
 
     /**
