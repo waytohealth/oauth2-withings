@@ -69,19 +69,21 @@ class Withings extends AbstractProvider
     }
 
     /**
-     * Builds the access token URL's query string.
+     * Requests an access token using a specified grant and option set.
      *
-     * @param  array $params Query parameters
-     * @return string Query string
+     * @param  mixed $grant
+     * @param  array $options
+     * @throws IdentityProviderException
+     * @return AccessTokenInterface
      */
-    protected function getAccessTokenQuery(array $params)
+    public function getAccessToken($grant, array $options = [])
     {
         // withings requires the action to be 'requesttoken' when getting an access token
-        if (empty($params['action'])) {
-            $params['action'] = 'requesttoken';
+        if (empty($options['action'])) {
+            $options['action'] = 'requesttoken';
         }
 
-        return parent::getAccessTokenQuery($params);
+        return parent::getAccessToken($options);
     }
 
     /**
