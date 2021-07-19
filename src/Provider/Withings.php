@@ -83,7 +83,7 @@ class Withings extends AbstractProvider
             $options['action'] = 'requesttoken';
         }
 
-        return parent::getAccessToken($options);
+        return parent::getAccessToken($grant, $options);
     }
 
     /**
