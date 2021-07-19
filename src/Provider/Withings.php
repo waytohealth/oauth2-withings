@@ -164,7 +164,7 @@ class Withings extends AbstractProvider
             );
         }
 
-        return parent::getAuthorizationParameters($result['body']);
+        return parent::prepareAccessTokenResponse($result['body']);
     }
 
     /**
