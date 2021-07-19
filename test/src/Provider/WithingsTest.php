@@ -77,7 +77,7 @@ class WithingsTest extends TestCase
         $params = [];
         $url = $this->provider->getBaseAccessTokenUrl($params);
         $uri = parse_url($url);
-        $this->assertEquals('/oauth2/token', $uri['path']);
+        $this->assertEquals('/v2/oauth2', $uri['path']);
     }
 
     public function testGetResourceOwnerDetailsUrl()
@@ -91,7 +91,7 @@ class WithingsTest extends TestCase
     public function testGetAccessToken()
     {
         $response = Mockery::mock('Psr\Http\Message\ResponseInterface');
-        $response->shouldReceive('getBody')->andReturn('{"access_token":"mock_access_token", "token_type":"Bearer", "scope": "identify"}');
+        $response->shouldReceive('getBody')->andReturn('{"status":0, "body":{"access_token":"mock_access_token", "token_type":"Bearer", "scope":"identify", "refresh_token":"mock_refresh_token", "user_id":"mock_user_id"}}');
         $response->shouldReceive('getHeader')->andReturn(['content-type' => 'json']);
         $response->shouldReceive('getStatusCode')->andReturn(200);
         $client = Mockery::mock('GuzzleHttp\ClientInterface');
@@ -99,8 +99,8 @@ class WithingsTest extends TestCase
         $this->provider->setHttpClient($client);
         $token = $this->provider->getAccessToken('authorization_code', ['code' => 'mock_authorization_code']);
         $this->assertEquals('mock_access_token', $token->getToken());
+        $this->assertEquals('mock_refresh_token', $token->getRefreshToken());
         $this->assertNull($token->getExpires());
-        $this->assertNull($token->getRefreshToken());
         $this->assertNull($token->getResourceOwnerId());
     }
 
