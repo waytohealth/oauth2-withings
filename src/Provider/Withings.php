@@ -69,6 +69,22 @@ class Withings extends AbstractProvider
     }
 
     /**
+     * Builds the access token URL's query string.
+     *
+     * @param  array $params Query parameters
+     * @return string Query string
+     */
+    protected function getAccessTokenQuery(array $params)
+    {
+        // withings requires the action to be 'requesttoken' when getting an access token
+        if (empty($params['action'])) {
+            $params['action'] = 'requesttoken';
+        }
+
+        return parent::getAccessTokenQuery($params);
+    }
+
+    /**
      * Returns the url to retrieve the resource owners's profile/details.
      *
      * @param AccessToken $token
